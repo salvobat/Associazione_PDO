@@ -15,10 +15,10 @@ require_once("checklogged.php");
                             </li>
                             <?php if($_SESSION["livello"]==0){?>
                                 <li class="nav-item">
-                                    <a href="aggiungiattivita.php" id="Aggiungi attivita" class="nav-link ">Aggiungi attivita</a>
+                                    <a href="aggiungiattivita.php" id="Aggiungi attivita" class="nav-link ">Aggiungi attività</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="aggiungimarca.php" id="Aggiungi marca" class="nav-link ">Aggiungi marca</a>
+                                    <a href="modificaattivita.php" id="Aggiungi marca" class="nav-link ">Modifica attività</a>
                                 </li>
                             <?php }?>
                         </ul>

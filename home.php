@@ -19,7 +19,7 @@ require_once("connessione.php");
 
             <div class="d-flex flex-row flex-wrap justify-content-between  mt-5" id="cards-container">
             <?php
-                $sql1=("SELECT idatt, NomeAtt, imgfile FROM attivita");
+                $sql1=("SELECT idatt, NomeAtt, imgfile FROM attivita ORDER by NomeAtt");
                 $preparata = $connessione->prepare($sql1);
                 $preparata->execute();
                 $attivita = $preparata->fetchAll();
