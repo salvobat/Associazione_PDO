@@ -115,12 +115,12 @@ require_once("connessione.php");
                                     $check=false;
                                     foreach($selanimatori as $sel){
                                         if($sel["Estidpers"]==$animatore["id"]){
-                                            echo "<input class='form-check-input mt-0' type='checkbox' id='check".$animatore["id"]."'value=".$animatore["id"]." checked>";
+                                            echo "<input class='form-check-input mt-0' type='checkbox' name=animatore[] id='check".$animatore["id"]."'value=".$animatore["id"]." checked>";
                                             $check=true;
                                         }
                                     }
                                     if(!$check){
-                                        echo "<input class='form-check-input mt-0' type='checkbox' id='check".$animatore["id"]."'value=".$animatore["id"].">";
+                                        echo "<input class='form-check-input mt-0' type='checkbox' name=animatore[] id='check".$animatore["id"]."'value=".$animatore["id"].">";
                                     }
                             echo "</div>
                                 <label class='input-group-text' for='check".$animatore["id"]."'>".$animatore["Cognome"]." ".$animatore["Nome"]." </label>

@@ -63,7 +63,7 @@ else{
     else if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
         $_SESSION["emodattivita"] .= " Il file caricato non è un'immagine. ";
     }
-    else if(!isset($_SESSION["emodattivita"])){
+    else if(!isset($_SESSION["emodattivita"])){ //CARICO L'IMMAGINE
         if (!move_uploaded_file($_FILES["imgfile"]["tmp_name"], $file)) {
             $_SESSION["emodattivita"] .= " Errore sconosciuto nel caricamento dell'immagine. ";
         }
@@ -75,6 +75,9 @@ if(isset($_SESSION["emodattivita"])){
     header("Location: modificaattivita.php?attivita=".$_SESSION["idatt"]);
     exit;
 }
+
+
+
 
 //-------------------------------------------------------------
 //CODICE PER VERIFICA LA VALIDITÀ DEI DATI INSERITI DALL'UTENTE
@@ -111,6 +114,45 @@ $sql1 = 'UPDATE attivita SET
     WHERE idatt = '.$_SESSION["idatt"];
 $preparata = $connessione->prepare($sql1);
 $preparata->execute();
+
+//ANIMATORI
+//$modanimatori=true;
+$selanimatori=$_POST["animatore"];
+$sql2 = "SELECT Estidpers FROM anima WHERE Estidatt=:idatt";
+$preparata2 = $connessione->prepare($sql2);
+$preparata2->execute([":idatt"=>$_SESSION["idatt"]]);
+$oldanimatori = $preparata2->fetchAll();
+// foreach ($oldanimatori as $old){
+//     echo $old["Estidpers"]."\n";
+// }
+foreach($selanimatori as $sel){
+    $check=false;
+    foreach($oldanimatori as $old){
+        if($sel==$old["Estidpers"]){
+            $check=true;
+        }
+    }
+    if(!$check){
+        $sql3 = "INSERT INTO anima (Estidatt, Estidpers) VALUES (".$_SESSION["idatt"].", ".$sel.")";
+        $preparata3 = $connessione->prepare($sql3);
+        $preparata3->execute();
+    }
+}
+$preparata2->execute([":idatt"=>$_SESSION["idatt"]]);
+$newanimatori = $preparata2->fetchAll();
+foreach($newanimatori as $new){
+    $check=false;
+    foreach($selanimatori as $sel){
+        if($sel==$new["Estidpers"]){
+            $check=true;
+        }
+    }
+    if(!$check){
+        $sql4 = "DELETE FROM anima WHERE Estidatt=".$_SESSION["idatt"]." AND Estidpers=".$new["Estidpers"];
+        $preparata4 = $connessione->prepare($sql4);
+        $preparata4->execute();
+    }
+}
 
 
 $_SESSION["modattivita"]=true;
