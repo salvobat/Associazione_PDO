@@ -34,6 +34,7 @@ $attivita = $preparata->fetch(PDO::FETCH_ASSOC);
                     <img src="img/<?php echo $attivita["imgfile"];?>" class="img-thumbnail">
                 </div>
                 <div class="col-md-9">
+                    <h3 class="mt-4"><b>Costo mensile: </b><?php echo $attivita["CostoMensile"];?>€</h3>
                     <h3 class="mt-4"><b>Descrizione</b></h3>
                     <p><?php echo ucfirst($attivita["Descrizione"]) ?></p>
                     <h3 class="mt-4"><b>Animatori: </b></h3>
