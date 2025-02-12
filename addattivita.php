@@ -6,6 +6,18 @@ require_once("connessione.php");
 unset($_SESSION["eaddattivita"]);
 $_SESSION["addattivita"]=false;
 
+
+if(isset($_SESSION["livello"])){
+    if($_SESSION["livello"]!=0){
+        header("Location: home.php");
+        exit;
+    }
+}
+if(!isset($_SESSION["addattivita"])){
+    $_SESSION["addattivita"]=false;
+}
+
+
 //CODICE PER VERIFICARE LA VALIDITÀ DEGLI ALTRI DATI INSERITI DALL'UTENTE
 
 //Nome
@@ -20,7 +32,7 @@ else {
 
     foreach ($attivita as $att) {
         if($att["nomeAtt"] == $_POST["nome"]) {
-            $_SESSION["eaddattivita"] .= " Nome attività non valido. ";
+            $_SESSION["eaddattivita"] .= " Nome attività non valido o già in uso. ";
         }
     }
 }
@@ -59,22 +71,16 @@ else{
         if (!move_uploaded_file($_FILES["imgfile"]["tmp_name"], $file)) {
             $_SESSION["eaddattivita"] .= " Errore sconosciuto nel caricamento dell'immagine. ";
         }
-    }   
+    }   //TO-DO RIPRISTINARE QUESTO CODICE
 }
 // Fine codice per verificare la validità dell'immagine caricata dall'utente
 
-//ANIMATORI
-$animatori = isset($_POST['animatori']) ? $_POST['animatori'] : array();
 
 //CHECK FINALE
 if(isset($_SESSION["eaddattivita"])){
     header("Location: aggiungiattivita.php");
     exit;
 }
-
-//-------------------------------------------------------------
-//CODICE PER VERIFICA LA VALIDITÀ DEI DATI INSERITI DALL'UTENTE
-//-------------------------------------------------------------
 
 //-------------------------------------------------------------
 //FINE CODICE PER VERIFICARE LA VALIDITÀ DEGLI ALTRI DATI INSERITI DALL'UTENTE
@@ -93,11 +99,19 @@ $preparata->execute([
     ':imgfile' => $_FILES["imgfile"]["name"] // Qui aggiungi l'estensione correttamente
 ]);
 
-$sql2 = "SELECT idatt FROM attivita WHERE NomeAtt=?'"; //TO-DO trovo l'indice dell'attività per inserirlo
-
-foreach ($animatori as $anima) { //TO-DO aggiungo su anima ogni animatore con l'indice attivita
-    $sql1 = 'INSERT INTO anima (idanim, estidpers, estidatt) 
-        VALUES (NULL, :idanim, :estidpers, :estidatt)';
+//ANIMATORI
+$sql2 = "SELECT DISTINCT idatt FROM attivita WHERE NomeAtt=:nome";
+$preparata2 = $connessione->prepare($sql2);
+$preparata2->execute([":nome"=>$_POST["nome"]]);
+$idatt = $preparata2->fetch();
+foreach($idatt as $id){
+    $idatt = $id;
+}
+$selanimatori=$_POST["animatore"];
+foreach($selanimatori as $sel){
+    $sql3 = "INSERT INTO anima (Estidatt, Estidpers) VALUES (:idatt, :sel)";
+    $preparata3 = $connessione->prepare($sql3);
+    $preparata3->execute([":idatt"=>$idatt, ":sel"=>$sel]);
 }
 
 $_SESSION["addattivita"]=true;

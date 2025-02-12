@@ -34,6 +34,16 @@ require_once("connessione.php");
                 <!--  -->
                 </div>
                 <div class="col-md-6 border rounded p-4">
+                    <?php
+                        if(isset($_SESSION["eaddattivita"])){
+                            echo "<div class='alert alert-danger mt-3' role='alert'><b>Errore:</b> ".$_SESSION["eaddattivita"]."</div>";
+                            unset($_SESSION["eaddattivita"]);
+                        }
+                        if($_SESSION["addattivita"]){
+                            echo "<div class='alert alert-success mt-3' role='alert'><center><b>Attivita aggiunta correttamente.</b></center></div>";
+                            $_SESSION["addattivita"]=false;
+                        }
+                    ?>
                     <form action="addattivita.php" method="post" class="justify-content-center" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="nome" class="form-label">Nome dell'attività</label>
@@ -60,16 +70,6 @@ require_once("connessione.php");
                         </div>
                         <div id="emailHelp" class="form-text">I formati consentiti sono JPG, JPEG e PNG</div>
                         
-                        <?php
-                            if(isset($_SESSION["eaddattivita"])){
-                                echo "<div class='alert alert-danger mt-3' role='alert'><b>Errore:</b> ".$_SESSION["eaddattivita"]."</div>";
-                                unset($_SESSION["eaddattivita"]);
-                            }
-                            if($_SESSION["addattivita"]){
-                                echo "<div class='alert alert-success mt-3' role='alert'><center><b>Attivita aggiunta correttamente.</b></center></div>";
-                                $_SESSION["addattivita"]=false;
-                            }
-                        ?>
 
                         <h3 class="mt-3">Aggiungi animatori:</h3>
                         <div class="d-flex flex-column gap-2">
@@ -81,12 +81,13 @@ require_once("connessione.php");
                         foreach($animatori as $animatore){
                             echo "<div class='input-group'>
                                 <div class='input-group-text'>
-                                    <input class='form-check-input mt-0' type='checkbox' name='animatori[]' id='check".$animatore["id"]."'value=".$animatore["id"].">
+                                    <input class='form-check-input mt-0' type='checkbox' name=animatore[] id='check".$animatore["id"]."'value=".$animatore["id"].">
                                 </div>
                                 <label class='input-group-text' for='check".$animatore["id"]."'>".$animatore["Cognome"]." ".$animatore["Nome"]." </label>
                                 </div>";
-                        }
-                        ?>
+                            }
+                            ?>
+                        <div id='emailHelp' class='form-text'>È possibile non inserire alcun animatore</div>
                         </div>
                         
                         <div class="d-flex justify-content-center mt-4 mb-5">
